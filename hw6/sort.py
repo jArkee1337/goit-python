@@ -101,14 +101,14 @@ def normalize(name):
     return result
 
 def main():
-    p = Path(input("Enter the directory path: "))
-    SORTING_FOLDER = p
 
     create_folders_from_list(p, type_of_files)
     folder_check(p)
     remove_empty_folders(p)
 
 if __name__ == "__main__":
+    p = Path(input("Enter the directory path: "))
+    SORTING_FOLDER = p
     main()
         
 
