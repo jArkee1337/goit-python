@@ -43,8 +43,7 @@ def create_folders(path):
         if not os.path.exists(f'{path}/{folder}'):
             os.mkdir(f'{path}/{folder}')
 
-def unpack_archive():
-    pass
+
 
 def sort_files(path, anchor_path):
 
@@ -57,22 +56,26 @@ def sort_files(path, anchor_path):
         elif way.is_file():
             ext = way.suffix.replace('.', '').upper()
             if ext in folders_and_formats['images']:
-                print(way)
-                print(f'{path}/images/{way.name}')
+
                 os.replace(way, f'{anchor_path}/images/{way.name}')
             elif ext in folders_and_formats['video']:
-                print(way)
-                print(f'{path}/video/{way.name}')
+
+
                 os.replace(way, f'{anchor_path}/video/{way.name}')
             elif ext in folders_and_formats['documents']:
-                print(way)
+
                 os.replace(way, f'{anchor_path}/documents/{way.name}')
             elif ext in folders_and_formats['audio']:
-                print(way)
+
                 os.replace(way, f'{anchor_path}/audio/{way.name}')
             elif ext in folders_and_formats['archives']:
-                print(way)
-                os.replace(way, f'{anchor_path}/archives/{way.name}')
+
+                new_path = f'{anchor_path}/archives/{way.name}'
+                os.replace(way, new_path)
+                name_for_moving = Path(new_path).name
+
+
+                shutil.unpack_archive(new_path, f'{Path(new_path).parent}/{Path(name_for_moving).stem}/')
 
 
 
@@ -83,8 +86,8 @@ def main():
     p = Path('/home/vk/Рабочий стол/dump')
     anchor_path = p
     #create_folders(p)
-    #sort_files(p, anchor_path)
-    #delete_empty_folders(p)
+    sort_files(p, anchor_path)
+    delete_empty_folders(p)
 
     #p = Path(input('Enter the path to the folder which you want to clean: '))
 
