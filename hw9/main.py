@@ -1,9 +1,13 @@
+
 phone_book = {}
+
 def input_error_decorator(func):
     def inner(*args, **kwargs):
         try:
 
-            return func(*args, **kwargs)
+            result = func(*args, **kwargs)
+
+            return result
         except KeyError:
             print("Your command isn't right please try again!")
         except IndexError:
