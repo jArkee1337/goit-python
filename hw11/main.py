@@ -153,7 +153,9 @@ Igor.add_func('8-913-177-73-84')
 Igor.add_func('8-913-177-73-85')
 address.add_record(Igor.name.value, Igor)
 print(Vova.days_to_birthday())
-
+print(next(address.iterator()))
+print(next(address.iterator()))
+print(next(address.iterator()))
 
 
 

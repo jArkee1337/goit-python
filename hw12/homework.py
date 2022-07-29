@@ -167,7 +167,7 @@ class AddressBook(UserDict):
                     print(i[0][0], end=" ")
 
 
-if __name__ == '__main__':
-    main()
 
+
+address = AddressBook()
 
