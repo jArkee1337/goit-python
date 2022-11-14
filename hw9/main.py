@@ -1,12 +1,10 @@
-
 phone_book = {}
+
 
 def input_error_decorator(func):
     def inner(*args, **kwargs):
         try:
-
             result = func(*args, **kwargs)
-
             return result
         except KeyError:
             print("Your command isn't right please try again!")
@@ -14,7 +12,6 @@ def input_error_decorator(func):
             print("Please enter the name and phone number correctly")
         except TypeError:
             print("Please enter the name and phone")
-
 
     return inner
 
@@ -71,7 +68,6 @@ def get_handler(operator):
 
 
 def main():
-
     while True:
 
         user_input = input("Enter the command: ").lower()
@@ -84,13 +80,10 @@ def main():
         else:
             user_input = user_input.split()
             handler = get_handler(user_input[0])
-            if handler == None:
+            if handler is None:
                 continue
-            else:
-                handler(user_input)
+            handler(user_input)
 
 
 if __name__ == "__main__":
     main()
-
-
