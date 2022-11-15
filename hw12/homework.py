@@ -1,6 +1,5 @@
 from collections import UserDict
 from datetime import datetime
-from datetime import timedelta
 import pickle
 import re
 
@@ -61,7 +60,7 @@ class Birthday:
 
     @birthday.setter
     def birthday(self, birthday):
-        if birthday == None:
+        if birthday is None:
             self.__birthday = birthday
         elif 1900 <= birthday.year <= datetime.now().year:
             self.__birthday = birthday
@@ -101,33 +100,34 @@ class Record:
 
     def days_to_birthday(self):
 
-        if self.birthday.birthday == None:
+        if self.birthday.birthday is None:
             return 'You have not set the birthday for this contact'
 
-        else:
-            now_date = datetime.now()
-            self.next_birthday = datetime(year=now_date.year, month=self.birthday.birthday.month,
+
+        now_date = datetime.now()
+        self.next_birthday = datetime(year=now_date.year, month=self.birthday.birthday.month,
                                           day=self.birthday.birthday.day)
-            self.next_year_birthday = datetime(year=now_date.year + 1, month=self.birthday.birthday.month,
+        self.next_year_birthday = datetime(year=now_date.year + 1, month=self.birthday.birthday.month,
                                                day=self.birthday.birthday.day)
 
-            if self.birthday.birthday.month > now_date.month:
-                remaining_days = self.next_birthday - now_date
-                return f' For next birthday remains {remaining_days.days} days'
+        if self.birthday.birthday.month > now_date.month:
+            remaining_days = self.next_birthday - now_date
+            return f' For next birthday remains {remaining_days.days} days'
 
-            elif self.birthday.birthday.month == now_date.month and self.birthday.birthday.day >= now_date.day:
-                remaining_days = self.next_birthday - now_date
-                return f' For next birthday remains {remaining_days.days + 1} days'
+        elif self.birthday.birthday.month == now_date.month and self.birthday.birthday.day >= now_date.day:
+            remaining_days = self.next_birthday - now_date
+            return f' For next birthday remains {remaining_days.days + 1} days'
 
-            else:
-                remaining_days = self.next_year_birthday - now_date
-                return f' For next birthday remains {remaining_days.days} days'
+        else:
+            remaining_days = self.next_year_birthday - now_date
+            return f' For next birthday remains {remaining_days.days} days'
 
 
 class AddressBook(UserDict):
 
     def __init__(self, page_size=1, offset=0):
-        self.data = {}
+        super().__init__()
+        # self.data = {}
         self.page_size = page_size
         self.offset = offset
 
@@ -140,7 +140,7 @@ class AddressBook(UserDict):
         page = result[self.offset:end_value]
         self.offset = end_value
 
-        if page == []:
+        if not page:
             raise StopIteration
         return page
 
@@ -168,3 +168,7 @@ class AddressBook(UserDict):
 
 
 address = AddressBook()
+Vladimir_rec = Record('vladimir')
+Vladimir_rec.add_func('8-913-177-73-83')
+address.add_record('Vladimir', Vladimir_rec)
+print(address.data['Vladimir'].name.value)
