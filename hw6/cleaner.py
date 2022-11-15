@@ -1,9 +1,20 @@
+"""
+Script for cleaning dump from folder that you will point
+"""
 from pathlib import Path
 import os
 import shutil
 import re
 import sys
 
+CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+TRANSLATION = (
+    "a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j",
+    "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f",
+    "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu",
+    "u", "ja",
+)
+TRANS = {}
 folders_and_formats = {'images': ('JPEG', 'PNG', 'JPG', 'SVG'),
                        'documents': ('DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'),
                        'audio': ('MP3', 'OGG', 'WAV', 'AMR'),
@@ -21,15 +32,12 @@ unknown_set_of_extensions = set()
 
 
 def normalize(name):
-    CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
-    TRANSLATION = (
-        "a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
-        "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "u", "ja", "je", "ji", "g")
-    TRANS = {}
-
-    for c, l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
-        TRANS[ord(c)] = l
-        TRANS[ord(c.upper())] = l.upper()
+    """
+    Function for transforming Russian alphabet
+    """
+    for rus_l, eng_l in zip(CYRILLIC_SYMBOLS, TRANSLATION):
+        TRANS[ord(rus_l)] = eng_l
+        TRANS[ord(rus_l.upper())] = eng_l.upper()
 
     result = name.translate(TRANS)
     result = re.sub("[^0-9a-zA-Z]+", "_", result)
@@ -37,6 +45,9 @@ def normalize(name):
 
 
 def delete_empty_folders(path):
+    """
+    Function for deleting empty folders, should be used after sorting
+    """
     for way in path.iterdir():
         if way.is_dir() and way.name not in folders_and_formats:
             delete_empty_folders(Path(f'{path}/{way.name}'))
@@ -45,12 +56,19 @@ def delete_empty_folders(path):
 
 
 def create_folders(path):
-    for folder in folders_and_formats.keys():
+    """
+    Create folders from folders_and_formats dictionary
+    """
+    for folder in folders_and_formats:
         if not os.path.exists(f'{path}/{folder}'):
             os.mkdir(f'{path}/{folder}')
 
 
 def sort_files(path, anchor_path):
+    """
+    The most useful function of this script
+    It will rename, replace, sort your folders
+    """
     for way in path.iterdir():
 
         if way.is_dir() and way.name not in folders_and_formats:
@@ -84,25 +102,28 @@ def sort_files(path, anchor_path):
                 new_path = f'{anchor_path}/archives/{normalized_name}'
                 os.replace(way, new_path)
                 name_for_moving = Path(new_path).name
-                shutil.unpack_archive(new_path, f'{Path(new_path).parent}/{Path(name_for_moving).stem}/')
+                shutil.unpack_archive(new_path,
+                                      f'{Path(new_path).parent}/{Path(name_for_moving).stem}/'
+                                      )
             else:
                 unknown_set_of_extensions.add(ext)
                 unknown_files_list.append(way.name)
 
 
 def main():
+    """
+    Main function
+    """
     if len(sys.argv) > 1:
 
-        p = Path(sys.argv[1])
+        path = Path(sys.argv[1])
     else:
-        p = Path(input('Enter the path to the folder which you want to clean: '))
+        path = Path(input('Enter the path to the folder which you want to clean: '))
 
-    anchor_path = p
-    create_folders(p)
-    sort_files(p, anchor_path)
-    delete_empty_folders(p)
-
-    # p = Path('/home/vk/Рабочий стол/dump')
+    anchor_path = path
+    create_folders(path)
+    sort_files(path, anchor_path)
+    delete_empty_folders(path)
 
 
 if __name__ == '__main__':

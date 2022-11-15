@@ -50,5 +50,3 @@ class AddressBook(UserDict):
 
     def remove_record(self, record_name_value):
         self.data.pop(record_name_value)
-
-

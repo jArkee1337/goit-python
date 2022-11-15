@@ -161,13 +161,10 @@ class AddressBook(UserDict):
 
     def search_name_or_phone_func(self, search_param):
 
-            for i in self:
-                result = re.findall(search_param, str(i[0][1]))
-                if result != []:
-                    print(i[0][0], end=" ")
-
-
+        for i in self:
+            result = re.findall(search_param, str(i[0][1]))
+            if result != []:
+                print(i[0][0], end=" ")
 
 
 address = AddressBook()
-
